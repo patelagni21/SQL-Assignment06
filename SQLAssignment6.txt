@@ -1,0 +1,63 @@
+Question 1
+Candidates (CandidateID (pk), CFName, CLName, CVotes, PID (fk))
+Precinct (PID (pk), name, geo, locality, state, timestamp, filestamp)
+
+CREATE TABLE Candidates (
+CandidateID int, 
+CFName varchar (50),
+CLName varchar (50),
+CVotes int (10),
+PID int (10), 
+PRIMARY KEY (CandidateID),
+FOREIGN KEY (PID) REFERENCES Precinct (PID)
+);
+
+
+CREATE TABLE Precinct (
+PID int (10),
+name varchar (100),
+geo varchar (50),
+locality varchar (50),
+state varchar (50),
+timestamp DATE (50),
+filestamp varchar (50),
+PRIMARY KEY (PID)
+);
+
+Question 2
+ALTER TABLE Candidates 
+ADD FOREIGN KEY (PID) REFERENCES Precinct (PID);
+
+Question 3
+SELECT Candidates,
+PID,
+ FOREIGN KEY,  
+Precinct,
+PID
+FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+WHERE
+ REFERENCED_TABLE_NAME = 'Precinct';
+
+Question 4
+CREATE TRIGGER del_precint 
+DELETE ON referencing_table REFERENCING OLD AS referenced_table
+FOR EACH ROW (DELETE FROM Penna WHERE precinct = “value”);
+
+Question 5
+CREATE FUNCTION voteUpdate() RETURNS trigger AS $triger_1$
+BEGIN
+INSERT INTO VoteChangeLog VALUES (‘precint_name’, ‘timestamp’, ‘old_vote’, ‘new_vote’, ‘candidate_name’)
+END
+
+CREATE FUNCTION voteUpdate2() RETURNS trigger AS $triger_1$
+BEGIN
+SET Penna.Biden = Penna.Biden+Votes AND Penna.Trump = Penna.Trump-Votes;
+END
+
+CREATE TRIGGER trigger_1
+AFTER UPDATE OF Biden, Trump
+ON Penna
+EXECUTE PROCEDURE voteUpdate2()
+EXECUTE PROCEDURE voteUpdate();
+
+
